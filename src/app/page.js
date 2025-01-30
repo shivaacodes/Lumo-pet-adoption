@@ -1,8 +1,10 @@
 import React from "react";
+import { Button } from "@/components/ui/button";
 
 export default function LandingPage() {
   return (
     <div className="relative min-h-screen bg-gray-100">
+      {/* Background Video */}
       <video
         className="absolute top-0 left-0 w-full object-cover object-bottom"
         autoPlay
@@ -16,24 +18,39 @@ export default function LandingPage() {
         Your browser does not support the video tag.
       </video>
 
-      <div className="absolute top-8 left-8 text-4xl font-extrabold text-black">
-        lumo
+      {/* Sign Up and Sign In Buttons */}
+      <div className="absolute top-6 right-6 space-x-4">
+        <Button className="text-white px-6 py-3 rounded-lg shadow-lg hover:opacity-80">
+          Sign Up
+        </Button>
+        <Button className="text-white px-6 py-3 rounded-lg shadow-lg hover:opacity-80">
+          Sign In
+        </Button>
       </div>
 
+      {/* Brand Name */}
+      <div className="absolute top-8 left-8 text-4xl font-extrabold text-white">
+        Lumo
+      </div>
+
+      {/* Main Section */}
       <div className="relative z-10 flex flex-col items-center justify-center min-h-screen">
-        <h1 className="text-8xl font-extrabold text-white">
+        <h1 className="text-8xl font-extrabold text-white text-center">
           Adopt a pet,{" "}
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-600 to-orange-400">
+          <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-red-400">
             hassle-free.
           </span>
         </h1>
       </div>
 
+      {/* Key Features Section */}
       <section className="bg-white py-20">
         <div className="max-w-7xl mx-auto px-6">
           <h2 className="text-4xl font-extrabold text-center text-gray-800 mb-12">
             Key Features
           </h2>
+
+          {/* Features Grid */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
             {/* Feature 1 */}
             <div className="bg-gray-50 p-8 rounded-xl shadow-lg flex flex-col items-center">
@@ -44,10 +61,11 @@ export default function LandingPage() {
                 Adopt Easy
               </h3>
               <p className="text-center text-gray-600">
-                Our platform simplifies the adoption process for pets, making it
-                easy for you to find and adopt the perfect pet.
+                Our platform simplifies the adoption process, making it easy to
+                find and adopt the perfect pet.
               </p>
             </div>
+
             {/* Feature 2 */}
             <div className="bg-gray-50 p-8 rounded-xl shadow-lg flex flex-col items-center">
               <div className="bg-yellow-500 text-white p-6 rounded-full mb-6">
@@ -61,6 +79,7 @@ export default function LandingPage() {
                 connecting them with the best homes.
               </p>
             </div>
+
             {/* Feature 3 */}
             <div className="bg-gray-50 p-8 rounded-xl shadow-lg flex flex-col items-center">
               <div className="bg-blue-500 text-white p-6 rounded-full mb-6">
@@ -76,7 +95,7 @@ export default function LandingPage() {
             </div>
           </div>
 
-          {/* Adjusting the bottom 2 cards */}
+          {/* Adjusted Bottom Features */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-10 mt-10">
             {/* Feature 4 */}
             <div className="bg-gray-50 p-8 rounded-xl shadow-lg flex flex-col items-center">
@@ -91,6 +110,7 @@ export default function LandingPage() {
                 reliable adoption for both pets and adopters.
               </p>
             </div>
+
             {/* Feature 5 */}
             <div className="bg-gray-50 p-8 rounded-xl shadow-lg flex flex-col items-center">
               <div className="bg-purple-500 text-white p-6 rounded-full mb-6">
@@ -101,13 +121,14 @@ export default function LandingPage() {
               </h3>
               <p className="text-center text-gray-600">
                 Our support team is available 24/7 to assist you throughout the
-                adoption process, making sure everything goes smoothly.
+                adoption process, ensuring everything runs smoothly.
               </p>
             </div>
           </div>
         </div>
       </section>
 
+      {/* Background Video at the Bottom */}
       <div className="relative">
         <video className="w-full object-cover" autoPlay loop muted>
           <source
@@ -118,8 +139,9 @@ export default function LandingPage() {
         </video>
       </div>
 
+      {/* Footer */}
       <footer className="bg-white text-center py-4 absolute bottom-0 left-0 w-full z-10">
-        <p className="text-gray-700">Made by Shiva , Tejas , Vishnu , Yadhu</p>
+        <p className="text-gray-700">Made by Shiva, Tejas, Vishnu, Yadhu</p>
       </footer>
     </div>
   );
