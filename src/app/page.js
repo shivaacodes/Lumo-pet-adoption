@@ -29,8 +29,8 @@ export default function LandingPage() {
       </div>
 
       {/* Brand Name */}
-      <div className="absolute top-8 left-8 text-4xl font-extrabold text-white">
-        Lumo
+      <div className="absolute top-8 left-8 text-4xl font-extrabold text-black">
+        lumo
       </div>
 
       {/* Main Section */}
