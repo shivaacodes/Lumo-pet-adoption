@@ -5,10 +5,10 @@ import { Button } from "./ui/button";
 import {
   ChevronDown,
   File,
-  GraduationCap,
-  LayoutDashboard,
-  PenBox,
+  PenTool,
+  Clock,
   StarIcon,
+  PawPrint,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -37,45 +37,43 @@ const Header = async () => {
         </Link>
 
         {/* Navigation Actions */}
-        <div className="flex items-center space-x-2">
-          {/* Dashboard Button */}
+        <div className="flex items-center space-x-6">
           <SignedIn>
             <Link href="/dashboard">
               <Button variant="outline">
-                <LayoutDashboard className="h-4 w-4" />
-                <span className="hidden md:block">Industry Insights</span>
+                <PawPrint className="h-4 w-4" />
+                <span className="hidden md:block font-poppins">
+                  Adopt a Pet
+                </span>
               </Button>
             </Link>
 
-            {/* Dropdown Menu */}
+            {/* My Pets Dropdown Menu */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button>
-                  <span className="hidden md:block">Growth Tools</span>
+                  <span className="hidden md:block font-poppins">My Pets</span>
                   <StarIcon className="h-5 w-5 ml-2" />
                   <ChevronDown className="h-5 w-5 ml-1" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent>
                 <DropdownMenuItem>
-                  <Link href={"/resume"} className="flex items-center gap-2">
+                  <Link href="/adopted" className="flex items-center gap-2">
                     <File className="h-4 w-4" />
-                    <span>Build Resume</span>
+                    <span>My Adopted Pets</span>
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem>
-                  <Link
-                    href={"/ai-cover-letter"}
-                    className="flex items-center gap-2"
-                  >
-                    <PenBox className="h-4 w-4" />
-                    <span>Cover Letter</span>
+                  <Link href="/available" className="flex items-center gap-2">
+                    <PenTool className="h-4 w-4" />
+                    <span>Available for Adoption</span>
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem>
-                  <Link href={"/interview"} className="flex items-center gap-2">
-                    <GraduationCap className="h-4 w-4" />
-                    <span>Interview Prep</span>
+                  <Link href="/history" className="flex items-center gap-2">
+                    <Clock className="h-4 w-4" />
+                    <span>Adoption History</span>
                   </Link>
                 </DropdownMenuItem>
               </DropdownMenuContent>
@@ -83,7 +81,7 @@ const Header = async () => {
           </SignedIn>
         </div>
 
-        {/* Profile Icon (Rightmost) */}
+        {/* Profile Icon*/}
         <SignedIn>
           <UserButton
             appearance={{

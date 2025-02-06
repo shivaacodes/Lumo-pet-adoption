@@ -18,14 +18,18 @@ export const checkUser = async () => {
       return loggedInUser;
     }
 
-    const name = `${user.firstName} ${user.lastName}`;
+    const name = `${user.firstName ?? ""} ${user.lastName ?? ""}`.trim();
+    const phone = user.phone || `N/A-${user.id}`;
+    const address = user.address || "Unknown Address";
 
     const newUser = await db.user.create({
       data: {
         clerkUserId: user.id,
-        name,
-        imageUrl: user.imageUrl,
+        name: name.length > 1 ? name : "Unknown User",
+        userImageUrl: user.userImageUrl,
         email: user.emailAddresses[0].emailAddress,
+        phone,
+        address,
       },
     });
 
