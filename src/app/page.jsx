@@ -1,5 +1,6 @@
 import React from "react";
 import Header from "@/components/header";
+import { PawPrint, Heart, UserCheck, Shield, Clock, Users } from "lucide-react";
 
 export default function LandingPage() {
   return (
@@ -47,7 +48,7 @@ export default function LandingPage() {
             {/* Feature 1 */}
             <div className="bg-gray-50 p-8 rounded-xl shadow-lg flex flex-col items-center">
               <div className="bg-green-500 text-white p-6 rounded-full mb-6">
-                <i className="fas fa-paw text-4xl"></i>
+                <PawPrint className="w-10 h-10" />
               </div>
               <h3 className="text-2xl font-bold text-gray-800 mb-4">
                 Adopt Easy
@@ -61,7 +62,7 @@ export default function LandingPage() {
             {/* Feature 2 */}
             <div className="bg-gray-50 p-8 rounded-xl shadow-lg flex flex-col items-center">
               <div className="bg-yellow-500 text-white p-6 rounded-full mb-6">
-                <i className="fas fa-heart text-4xl"></i>
+                <Heart className="w-10 h-10" />
               </div>
               <h3 className="text-2xl font-bold text-gray-800 mb-4">
                 Love & Care
@@ -75,7 +76,7 @@ export default function LandingPage() {
             {/* Feature 3 */}
             <div className="bg-gray-50 p-8 rounded-xl shadow-lg flex flex-col items-center">
               <div className="bg-blue-500 text-white p-6 rounded-full mb-6">
-                <i className="fas fa-user-check text-4xl"></i>
+                <UserCheck className="w-10 h-10" />
               </div>
               <h3 className="text-2xl font-bold text-gray-800 mb-4">
                 Verified Profiles
@@ -87,12 +88,11 @@ export default function LandingPage() {
             </div>
           </div>
 
-          {/* Adjusted Bottom Features */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-10 mt-10">
             {/* Feature 4 */}
             <div className="bg-gray-50 p-8 rounded-xl shadow-lg flex flex-col items-center">
               <div className="bg-red-500 text-white p-6 rounded-full mb-6">
-                <i className="fas fa-shield-alt text-4xl"></i>
+                <Shield className="w-10 h-10" />
               </div>
               <h3 className="text-2xl font-bold text-gray-800 mb-4">
                 Secure Transactions
@@ -106,7 +106,7 @@ export default function LandingPage() {
             {/* Feature 5 */}
             <div className="bg-gray-50 p-8 rounded-xl shadow-lg flex flex-col items-center">
               <div className="bg-purple-500 text-white p-6 rounded-full mb-6">
-                <i className="fas fa-clock text-4xl"></i>
+                <Clock className="w-10 h-10" />
               </div>
               <h3 className="text-2xl font-bold text-gray-800 mb-4">
                 24/7 Support
@@ -114,6 +114,18 @@ export default function LandingPage() {
               <p className="text-center text-gray-600">
                 Our support team is available 24/7 to assist you throughout the
                 adoption process, ensuring everything runs smoothly.
+              </p>
+            </div>
+            <div className="bg-gray-50 p-8 rounded-xl shadow-lg flex flex-col items-center text-center hover:shadow-xl transition-shadow duration-300">
+              <div className="bg-pink-500 text-white p-6 rounded-full mb-6">
+                <Users className="w-10 h-10" />
+              </div>
+              <h3 className="text-2xl font-bold text-gray-800 mb-4">
+                Community Support
+              </h3>
+              <p className="text-gray-600">
+                Join our community of pet lovers to share experiences, tips, and
+                support for a better adoption journey.
               </p>
             </div>
           </div>
