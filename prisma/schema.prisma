@@ -20,9 +20,12 @@ model Pet {
   updatedAt   DateTime  @updatedAt
 
   // Relations
-  //adoption   Adoption?
-  ownerId Int?
-  owner   User? @relation(fields: [ownerId], references: [id])
+  ownerId   Int?
+  owner     User?      @relation(fields: [ownerId], references: [id])
+  shelterId Int?
+  shelter   Shelter?   @relation(fields: [shelterId], references: [id])
+  adoptions Adoption[]
+  reviews   Review[]
 }
 
 model User {
@@ -30,9 +33,16 @@ model User {
   name      String
   email     String   @unique
   password  String
+  phone     String   @unique
+  address   String
+  role      UserRole @default(USER)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  // Relations
   pets      Pet[]
+  adoptions Adoption[]
+  Review    Review[]
 }
 
 model Adoption {
@@ -42,18 +52,50 @@ model Adoption {
   adoptedAt DateTime       @default(now())
   status    AdoptionStatus
 
-  // // Relations
-  // pet         Pet      @relation(fields: [petId], references: [id])
-  // adopter     User     @relation(fields: [adopterId], references: [id])
+  // Relations
+  pet     Pet  @relation(fields: [petId], references: [id])
+  adopter User @relation(fields: [adopterId], references: [id])
+}
+
+model Shelter {
+  id        Int      @id @default(autoincrement())
+  name      String
+  location  String
+  contact   String
+  email     String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  pets Pet[]
+}
+
+model Review {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  petId     Int
+  rating    Int
+  comment   String?
+  createdAt DateTime @default(now())
+
+  // Relations
+  user User @relation(fields: [userId], references: [id])
+  pet  Pet  @relation(fields: [petId], references: [id])
 }
 
 enum PetStatus {
   AVAILABLE
   ADOPTED
+  PENDING
 }
 
 enum AdoptionStatus {
   PENDING
   COMPLETED
   CANCELLED
+}
+
+enum UserRole {
+  ADMIN
+  USER
 }

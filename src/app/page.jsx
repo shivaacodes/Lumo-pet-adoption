@@ -1,5 +1,5 @@
 import React from "react";
-import { Button } from "@/components/ui/button";
+import Header from "@/components/header";
 
 export default function LandingPage() {
   return (
@@ -18,15 +18,7 @@ export default function LandingPage() {
         Your browser does not support the video tag.
       </video>
 
-      {/* Sign Up and Sign In Buttons */}
-      <div className="absolute top-6 right-6 space-x-4">
-        <Button className="text-white px-6 py-3 rounded-lg shadow-lg hover:opacity-80">
-          Sign Up
-        </Button>
-        <Button className="text-white px-6 py-3 rounded-lg shadow-lg hover:opacity-80">
-          Sign In
-        </Button>
-      </div>
+      <Header />
 
       {/* Brand Name */}
       <div className="absolute top-8 left-8 text-4xl font-extrabold text-black">
