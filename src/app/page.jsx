@@ -142,11 +142,6 @@ export default function LandingPage() {
           Your browser does not support the video tag.
         </video>
       </div>
-
-      {/* Footer */}
-      <footer className="bg-white text-center py-4 absolute bottom-0 left-0 w-full z-10">
-        <p className="text-gray-700">Made by Shiva, Tejas, Vishnu, Yadhu</p>
-      </footer>
     </div>
   );
 }

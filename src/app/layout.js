@@ -3,7 +3,6 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { ClerkProvider } from "@clerk/nextjs";
 
-// Font configurations
 const urbanist = Urbanist({
   variable: "--font-urbanist",
   subsets: ["latin"],
@@ -16,7 +15,6 @@ const poppins = Poppins({
   weight: ["200", "300", "400", "500"],
 });
 
-// Metadata for SEO
 export const metadata = {
   title: "Lumo - Pet Adoption",
   description: "A modern web application built with Next.js",
@@ -37,7 +35,7 @@ export default function RootLayout({ children }) {
         >
           <ThemeProvider
             attribute="class"
-            defaultTheme="dark"
+            defaultTheme="system"
             enableSystem
             disableTransitionOnChange
           >
