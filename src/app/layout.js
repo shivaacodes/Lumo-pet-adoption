@@ -40,9 +40,6 @@ export default function RootLayout({ children }) {
             disableTransitionOnChange
           >
             <main className="min-h-screen">{children}</main>
-            <footer className="py-4 text-center bg-white text-gray-600">
-              <p>All rights reserved.</p>
-            </footer>
           </ThemeProvider>
         </body>
       </html>

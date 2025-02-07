@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import categories from "@/app/data/category";
 import SearchBar from "@/components/search";
 import AdoptPetButton from "@/components/adopt-button";
+import LikeButton from "@/components/like-button";
 
 const CategoryPage = () => {
   const [selectedCategory, setSelectedCategory] = useState(null);
@@ -25,9 +26,9 @@ const CategoryPage = () => {
       const bStartsWith = b.category
         .toLowerCase()
         .startsWith(searchQuery.toLowerCase());
-      if (aStartsWith && !bStartsWith) return -1; // Put a before b
-      if (!aStartsWith && bStartsWith) return 1; // Put b before a
-      return 0; // No change if both are similar
+      if (aStartsWith && !bStartsWith) return -1;
+      if (!aStartsWith && bStartsWith) return 1;
+      return 0;
     });
 
   return (
@@ -35,13 +36,12 @@ const CategoryPage = () => {
       <SearchBar
         className="bg-gray-100 w-full max-w-xl mb-8"
         value={searchQuery}
-        onChange={(e) => setSearchQuery(e.target.value)} // Update search query
+        onChange={(e) => setSearchQuery(e.target.value)}
       />
       <h1 className="text-7xl font-bold mb-6 mt-7 font-poppins text-center text-gray-800">
         Categories
       </h1>
 
-      {/* Display cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 w-full max-w-6xl mt-7">
         {filteredCategories.map((category, index) => (
           <div
@@ -49,7 +49,6 @@ const CategoryPage = () => {
             className={`p-4 rounded-2xl shadow-md transition-transform duration-300 hover:scale-105 cursor-pointer flex flex-col items-center text-center ${category.bgColor} hover:${category.hoverColor}`}
             onClick={() => handleCategoryClick(category.category)}
           >
-            {/* Image section */}
             <div className="relative mb-6">
               <img
                 src={`/images/${category.category.toLowerCase()}.png`}
@@ -58,21 +57,18 @@ const CategoryPage = () => {
               />
             </div>
 
-            {/* Data section with white background */}
             <div className="bg-white p-4 rounded-xl w-full text-gray-800">
               <h2 className="text-lg font-semibold mb-2">
                 {category.category}
               </h2>
               <p className="text-sm text-gray-600">
-                {category.description.slice(0, 100)}...{" "}
+                {category.description.slice(0, 100)}...
               </p>
-              {/* Shortened description */}
             </div>
           </div>
         ))}
       </div>
 
-      {/* Popup content when category is clicked */}
       {selectedCategory && (
         <div className="fixed inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center z-50 opacity-0 animate-fadeIn transition-opacity duration-300">
           <div className="bg-white p-8 rounded-3xl shadow-xl max-w-3xl w-full transform scale-95 animate-scaleUp transition-all duration-300">
@@ -131,9 +127,12 @@ const CategoryPage = () => {
               </p>
             </div>
 
-            <div className="mt-6">
+            <div className="mt-6 flex justify-between">
               <AdoptPetButton
                 onClick={() => console.log(`Adopting ${selectedCategory}`)}
+              />
+              <LikeButton
+                onClick={() => console.log(`Liked ${selectedCategory}`)}
               />
             </div>
           </div>
