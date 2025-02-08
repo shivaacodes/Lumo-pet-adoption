@@ -5,6 +5,7 @@ import categories from "@/app/data/category";
 import SearchBar from "@/components/search";
 import AdoptPetButton from "@/components/adopt-button";
 import LikeButton from "@/components/like-button";
+import AddPetButton from "@/components/add-pet-button";
 
 const CategoryPage = () => {
   const [selectedCategory, setSelectedCategory] = useState(null);
@@ -33,11 +34,16 @@ const CategoryPage = () => {
 
   return (
     <div className="min-h-screen text-gray-900 p-8 flex flex-col items-center relative">
-      <SearchBar
-        className="bg-gray-100 w-full max-w-xl mb-8"
-        value={searchQuery}
-        onChange={(e) => setSearchQuery(e.target.value)}
-      />
+      {/* SearchBar & AddPetButton container */}
+      <div className="w-full max-w-xl flex items-center justify-between mb-8">
+        <SearchBar
+          className="bg-gray-100 flex-1"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+        />
+        <AddPetButton />
+      </div>
+
       <h1 className="text-7xl font-bold mb-6 mt-7 font-poppins text-center text-gray-800">
         Categories
       </h1>

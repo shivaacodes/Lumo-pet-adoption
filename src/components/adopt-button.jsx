@@ -7,7 +7,7 @@ const AdoptPetButton = ({ onClick }) => {
   return (
     <Button
       onClick={onClick}
-      className="bg-blue-600 text-white font-semibold py-3 px-6 rounded-lg shadow-lg hover:bg-blue-700 transform hover:scale-105 transition-all duration-200"
+      className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold py-4 px-8 rounded-xl shadow-xl hover:from-blue-700 hover:to-indigo-700 transform hover:scale-110 transition-all duration-300"
     >
       Adopt a Pet 🎉
     </Button>

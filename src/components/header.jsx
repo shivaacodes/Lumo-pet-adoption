@@ -31,7 +31,7 @@ const Header = async () => {
             height={70}
             className="h-14 w-auto object-contain"
           />
-          <span className="text-white text-5xl font-semibold font-poppins">
+          <span className="text-black text-5xl font-semibold font-poppins">
             Lumo
           </span>
         </Link>
@@ -48,7 +48,6 @@ const Header = async () => {
               </Button>
             </Link>
 
-            {/* My Pets Dropdown Menu */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button>
