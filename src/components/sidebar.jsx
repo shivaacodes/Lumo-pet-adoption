@@ -24,9 +24,7 @@ const Sidebar = () => {
       icon: ClipboardList,
       href: "/requests",
     },
-
     { id: "favourites", label: "Favourites", icon: Heart, href: "/favourites" },
-
     { id: "settings", label: "Settings", icon: Settings, href: "/settings" },
   ];
 
@@ -48,17 +46,17 @@ const Sidebar = () => {
 
       {/* Lumo Text */}
       {isOpen && (
-        <h2 className="text-lg font-semibold text-gray-800 text-center mb-4">
+        <h2 className="text-lg font-semibold text-gray-800 text-center mb-6">
           Lumo
         </h2>
       )}
 
       {/* Sidebar Menu */}
-      <nav className="flex flex-col space-y-4">
+      <nav className="flex flex-col space-y-6">
         {menuItems.map((item) => (
           <Link key={item.id} href={item.href}>
             <div
-              className={`flex items-center gap-3 p-3 rounded-lg cursor-pointer transition ${
+              className={`flex items-center gap-4 p-3 rounded-lg cursor-pointer transition ${
                 active === item.id
                   ? "bg-gray-200 font-semibold"
                   : "hover:bg-gray-50"
@@ -66,7 +64,9 @@ const Sidebar = () => {
               onClick={() => setActive(item.id)}
             >
               <item.icon className="w-6 h-6 text-gray-700" />
-              {isOpen && <span className="text-gray-800">{item.label}</span>}
+              {isOpen && (
+                <span className="text-sm text-gray-800">{item.label}</span>
+              )}
             </div>
           </Link>
         ))}

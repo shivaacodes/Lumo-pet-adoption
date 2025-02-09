@@ -6,13 +6,23 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useRouter } from "next/navigation";
 
 export default function AddPetButton() {
+  const router = useRouter();
+
+  const handleClick = () => {
+    router.push("/add-pet");
+  };
+
   return (
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger asChild>
-          <Button className="bg-yellow-400 hover:bg-yellow-500 text-white rounded-[30px] shadow-lg w-14 h-14 flex items-center justify-center">
+          <Button
+            onClick={handleClick}
+            className="bg-red-400 hover:bg-red-600 text-white rounded-[30px] shadow-lg w-14 h-14 flex items-center justify-center"
+          >
             <Plus className="w-10 h-10" />
           </Button>
         </TooltipTrigger>

@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import FormButton from "@/components/form-button";
 import {
   Select,
@@ -72,9 +71,44 @@ export default function AddPetPage() {
     }
   };
 
-  const onSubmit = (data) => {
-    console.log("Form Data:", data);
-    // Send data to backend (will be updated)
+  const onSubmit = async (data) => {
+    try {
+      // Create a FormData object to handle file uploads
+      const formData = new FormData();
+
+      // Append all form fields to the FormData object
+      formData.append("category", data.category);
+      formData.append("breed", data.breed);
+      formData.append("color", data.color);
+      formData.append("age", data.age.toString());
+      formData.append("price", data.price.toString());
+      formData.append("negotiable", data.negotiable.toString());
+      formData.append("description", data.description);
+      formData.append("vaccinationStatus", data.vaccinationStatus);
+      formData.append("ownerId", "1"); // Replace with the actual owner ID (e.g., from user session)
+
+      // Append the pet image file
+      if (data.petImage && data.petImage[0]) {
+        formData.append("petImage", data.petImage[0]);
+      }
+
+      // Send the form data to the backend
+      const response = await fetch("/api/pets", {
+        method: "POST",
+        body: formData, // No need to set Content-Type header for FormData
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to submit form");
+      }
+
+      const result = await response.json();
+      console.log("Pet added successfully:", result);
+      alert("Pet added successfully!");
+    } catch (error) {
+      console.error("Error submitting form:", error);
+      alert("Failed to add pet. Please try again.");
+    }
   };
 
   return (
@@ -221,6 +255,7 @@ export default function AddPetPage() {
               />
             </div>
 
+            {/* Description */}
             <div>
               <Label className="text-xl">Description</Label>
               <Textarea

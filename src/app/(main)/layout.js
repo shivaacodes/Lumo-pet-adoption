@@ -12,7 +12,7 @@ const MainLayout = ({ children }) => {
             <UserButton
               appearance={{
                 elements: {
-                  avatarBox: "h-10 w-10",
+                  avatarBox: "h-14 w-14",
                   userButtonPopoverCard: "shadow-xl",
                   userPreviewMainIdentifier: "font-semibold",
                 },
