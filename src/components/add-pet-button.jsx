@@ -21,9 +21,9 @@ export default function AddPetButton() {
         <TooltipTrigger asChild>
           <Button
             onClick={handleClick}
-            className="bg-red-400 hover:bg-red-600 text-white rounded-[30px] shadow-lg w-14 h-14 flex items-center justify-center"
+            className="bg-red-500 hover:bg-red-600 text-white rounded-xl shadow-lg w-12 h-12 flex items-center justify-center"
           >
-            <Plus className="w-10 h-10" />
+            <Plus className="w-8 h-8" />
           </Button>
         </TooltipTrigger>
         <TooltipContent side="top">
