@@ -1,36 +1,34 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import categories from "@/app/data/category";
 import SearchBar from "@/components/search";
 import AdoptPetButton from "@/components/adopt-button";
 import LikeButton from "@/components/like-button";
 import AddPetButton from "@/components/add-pet-button";
 
-const CategoryPage = () => {
+const CategoryPage = ({ params }) => {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [pets, setPets] = useState([]);
+  const router = useRouter();
+
+  // Unwrap the params object using React.use()
+  const { category } = React.use(params); // Unwrap the category from params
+
+  // Fetch the category-related pets using useEffect or data fetching logic
+  useEffect(() => {
+    if (category) {
+      // Assuming petsData is available and filtered based on category
+      const filteredPets = petsData.filter((pet) => pet.category === category);
+      setPets(filteredPets);
+    }
+  }, [category]);
 
   const handleCategoryClick = (category) => {
     setSelectedCategory(selectedCategory === category ? null : category);
   };
-
-  // Filter and sort categories based on search query
-  const filteredCategories = categories
-    .filter((category) =>
-      category.category.toLowerCase().includes(searchQuery.toLowerCase())
-    )
-    .sort((a, b) => {
-      const aStartsWith = a.category
-        .toLowerCase()
-        .startsWith(searchQuery.toLowerCase());
-      const bStartsWith = b.category
-        .toLowerCase()
-        .startsWith(searchQuery.toLowerCase());
-      if (aStartsWith && !bStartsWith) return -1;
-      if (!aStartsWith && bStartsWith) return 1;
-      return 0;
-    });
 
   return (
     <div className="min-h-screen text-gray-900 p-8 flex flex-col items-center relative">
@@ -49,7 +47,7 @@ const CategoryPage = () => {
       </h1>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 w-full max-w-6xl mt-7">
-        {filteredCategories.map((category, index) => (
+        {categories.map((category, index) => (
           <div
             key={index}
             className={`p-4 rounded-2xl shadow-md transition-transform duration-300 hover:scale-105 cursor-pointer flex flex-col items-center text-center ${category.bgColor} hover:${category.hoverColor}`}
@@ -135,7 +133,7 @@ const CategoryPage = () => {
 
             <div className="mt-6 flex justify-between">
               <AdoptPetButton
-                onClick={() => console.log(`Adopting ${selectedCategory}`)}
+                onClick={() => router.push(`/category/${selectedCategory}`)}
               />
               <LikeButton
                 onClick={() => console.log(`Liked ${selectedCategory}`)}

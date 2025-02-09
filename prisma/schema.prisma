@@ -7,97 +7,57 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Pet {
-  id          Int       @id @default(autoincrement())
-  breed       String
-  age         Int
-  color       String
-  size        String
-  description String
-  imageUrl    String?
-  status      PetStatus
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-
-  // Relations
-  ownerId   Int?
-  owner     User?      @relation(fields: [ownerId], references: [id])
-  shelterId Int?
-  shelter   Shelter?   @relation(fields: [shelterId], references: [id])
-  adoptions Adoption[]
-  reviews   Review[]
-}
-
 model User {
-  id           Int      @id @default(autoincrement())
-  clerkUserId  String   @unique
-  name         String
-  email        String   @unique
-  password     String?
-  phone        String   @unique
-  userImageUrl String?
-  address      String?
-  role         UserRole @default(USER)
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-
-  // Relations
-  pets      Pet[]
-  adoptions Adoption[]
-  Review    Review[]
+  id               Int               @id @default(autoincrement())
+  clerkUserId      String            @unique
+  name             String
+  email            String            @unique
+  password         String?
+  phone            String            @unique
+  userImageUrl     String?
+  address          String?
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+  pets             Pet[] // User can own multiple pets
+  adoptionRequests AdoptionRequest[] // User's adoption requests
 }
 
-model Adoption {
+model Pet {
+  id                Int               @id @default(autoincrement())
+  category          String
+  breed             String?
+  color             String?
+  age               Int
+  price             Int
+  isNegotiable      Boolean
+  petImageUrl       String?
+  description       String
+  vaccinationStatus PetStatus
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+  ownerId           Int
+  owner             User              @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  adoptionRequests  AdoptionRequest[]
+}
+
+model AdoptionRequest {
   id        Int            @id @default(autoincrement())
   petId     Int
   adopterId Int
   adoptedAt DateTime       @default(now())
   status    AdoptionStatus
-
-  // Relations
-  pet     Pet  @relation(fields: [petId], references: [id])
-  adopter User @relation(fields: [adopterId], references: [id])
-}
-
-model Shelter {
-  id        Int      @id @default(autoincrement())
-  name      String
-  location  String
-  contact   String
-  email     String   @unique
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  // Relations
-  pets Pet[]
-}
-
-model Review {
-  id        Int      @id @default(autoincrement())
-  userId    Int
-  petId     Int
-  rating    Int
-  comment   String?
-  createdAt DateTime @default(now())
-
-  // Relations
-  user User @relation(fields: [userId], references: [id])
-  pet  Pet  @relation(fields: [petId], references: [id])
+  pet       Pet            @relation(fields: [petId], references: [id], onDelete: Cascade)
+  adopter   User           @relation(fields: [adopterId], references: [id], onDelete: Cascade)
 }
 
 enum PetStatus {
-  AVAILABLE
-  ADOPTED
-  PENDING
+  UPTODATE
+  PARTIALVACCINATED
+  NOTVACCINATED
 }
 
 enum AdoptionStatus {
   PENDING
   COMPLETED
-  CANCELLED
-}
-
-enum UserRole {
-  ADMIN
-  USER
+  REJECTED
 }
