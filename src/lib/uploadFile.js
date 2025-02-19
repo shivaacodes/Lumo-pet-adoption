@@ -1,13 +1,34 @@
-export async function uploadFile(file) {
-  // Example: Upload file to a cloud storage service and return the URL
-  const formData = new FormData();
-  formData.append("file", file);
+import { v2 as cloudinary } from 'cloudinary';
 
-  const response = await fetch("https://example.com/upload", {
-    method: "POST",
-    body: formData,
+// Only configure cloudinary on the server side
+if (typeof window === 'undefined') {
+  cloudinary.config({
+    cloud_name: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET,
   });
-
-  const data = await response.json();
-  return data.url;
 }
+
+export const uploadFile = async (file) => {
+  try {
+    if (typeof window !== 'undefined') {
+      throw new Error('uploadFile can only be used on the server side');
+    }
+
+    // Convert file to base64
+    const fileBuffer = await file.arrayBuffer();
+    const base64File = Buffer.from(fileBuffer).toString('base64');
+    const dataURI = `data:${file.type};base64,${base64File}`;
+
+    // Upload to Cloudinary
+    const result = await cloudinary.uploader.upload(dataURI, {
+      folder: 'lumo-pets',
+      resource_type: 'auto',
+    });
+
+    return result.secure_url;
+  } catch (error) {
+    console.error('Error uploading file:', error);
+    throw new Error('Failed to upload image');
+  }
+};

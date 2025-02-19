@@ -1,26 +1,20 @@
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Spinner } from "@/components/ui/spinner";
+"use client";
 
-const FormButton = ({ isLoading, children, ...props }) => {
+import { Button } from "@/components/ui/button";
+import { Loader2 } from "lucide-react";
+
+export default function FormButton({ children, isLoading }) {
   return (
     <Button
-      className={`w-full bg-green-600 hover:bg-green-700 text-white rounded-xl py-4 text-xl font-bold${
-        isLoading ? "cursor-wait" : ""
-      }`}
+      type="submit"
       disabled={isLoading}
-      {...props}
+      className="w-full bg-blue-500 hover:bg-blue-600 text-white text-xl py-6 rounded-2xl transition-all duration-300 flex items-center justify-center gap-2"
     >
       {isLoading ? (
-        <div className="flex justify-center items-center">
-          <Spinner size="sm" />
-          <span className="ml-2">Loading...</span>
-        </div>
+        <Loader2 className="h-6 w-6 animate-spin" />
       ) : (
         children
       )}
     </Button>
   );
-};
-
-export default FormButton;
+}

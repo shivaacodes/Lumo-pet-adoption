@@ -2,6 +2,7 @@ import { Urbanist, Poppins } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { ClerkProvider } from "@clerk/nextjs";
+import { Toaster } from "sonner";
 
 const urbanist = Urbanist({
   variable: "--font-urbanist",
@@ -40,6 +41,12 @@ export default function RootLayout({ children }) {
             disableTransitionOnChange
           >
             <main className="min-h-screen">{children}</main>
+            <Toaster 
+              position="top-right"
+              expand={true}
+              richColors
+              closeButton
+            />
           </ThemeProvider>
         </body>
       </html>

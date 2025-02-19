@@ -16,14 +16,21 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Slider } from "@/components/ui/slider";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { useAuth } from "@clerk/nextjs";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+import FileUpload from '@/components/file-upload';
 
 export default function AddPetPage() {
+  const { userId } = useAuth();
+  const router = useRouter();
   const [category, setCategory] = useState("");
   const [breeds, setBreeds] = useState([]);
   const [colors, setColors] = useState([]);
   const [currency, setCurrency] = useState("INR");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const { register, handleSubmit, setValue, watch } = useForm({
+  const { register, handleSubmit, setValue, watch, reset } = useForm({
     defaultValues: {
       category: "",
       breed: "",
@@ -73,41 +80,80 @@ export default function AddPetPage() {
 
   const onSubmit = async (data) => {
     try {
-      // Create a FormData object to handle file uploads
+      setIsSubmitting(true);
+      if (!userId) {
+        toast.error("Please sign in to add a pet", {
+          richColors: true,
+        });
+        return;
+      }
+
       const formData = new FormData();
 
-      // Append all form fields to the FormData object
+      // Validate required fields
+      if (!data.category || !data.age || !data.price || !data.description || !data.vaccinationStatus) {
+        toast.error("Please fill in all required fields", {
+          richColors: true,
+        });
+        return;
+      }
+
+      // Validate file if present
+      if (data.petImage?.[0]) {
+        const file = data.petImage[0];
+        const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
+        const fiveMB = 5 * 1024 * 1024;
+
+        if (!allowedTypes.includes(file.type)) {
+          toast.error("Invalid file type. Only JPEG, PNG and WebP are allowed");
+          return;
+        }
+
+        if (file.size > fiveMB) {
+          toast.error("File size too large. Maximum size is 5MB");
+          return;
+        }
+      }
+
+      // Append form data
       formData.append("category", data.category);
-      formData.append("breed", data.breed);
-      formData.append("color", data.color);
+      formData.append("breed", data.breed || '');
+      formData.append("color", data.color || '');
       formData.append("age", data.age.toString());
       formData.append("price", data.price.toString());
-      formData.append("negotiable", data.negotiable.toString());
+      formData.append("negotiable", Boolean(data.negotiable).toString());
       formData.append("description", data.description);
       formData.append("vaccinationStatus", data.vaccinationStatus);
-      formData.append("ownerId", "1"); // Replace with the actual owner ID (e.g., from user session)
 
-      // Append the pet image file
-      if (data.petImage && data.petImage[0]) {
+      if (data.petImage?.[0]) {
         formData.append("petImage", data.petImage[0]);
       }
 
-      // Send the form data to the backend
       const response = await fetch("/api/pets", {
         method: "POST",
-        body: formData, // No need to set Content-Type header for FormData
+        body: formData,
       });
 
+      const result = await response.json();
+
       if (!response.ok) {
-        throw new Error("Failed to submit form");
+        throw new Error(result.error || "Failed to add pet");
       }
 
-      const result = await response.json();
-      console.log("Pet added successfully:", result);
-      alert("Pet added successfully!");
+      toast.success(`${data.category} added successfully!`, {
+        richColors: true,
+        duration: 3000,
+      });
+
+      reset();
+      router.push("/category");
     } catch (error) {
       console.error("Error submitting form:", error);
-      alert("Failed to add pet. Please try again.");
+      toast.error(error.message || "Failed to add pet. Please try again.", {
+        richColors: true,
+      });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -236,9 +282,9 @@ export default function AddPetPage() {
                   <SelectValue placeholder="Select status" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="up-to-date">Up to date</SelectItem>
-                  <SelectItem value="not-vaccinated">Not vaccinated</SelectItem>
-                  <SelectItem value="partially-vaccinated">
+                  <SelectItem value="UPTODATE">Up to date</SelectItem>
+                  <SelectItem value="NOTVACCINATED">Not vaccinated</SelectItem>
+                  <SelectItem value="PARTIALVACCINATED">
                     Partially vaccinated
                   </SelectItem>
                 </SelectContent>
@@ -248,10 +294,11 @@ export default function AddPetPage() {
             {/* Pet Image */}
             <div>
               <Label className="text-xl">Pet Image</Label>
-              <Input
-                type="file"
-                className="text-lg p-2 rounded-xl"
-                {...register("petImage")}
+              <FileUpload
+                register={register("petImage")}
+                onFileSelect={(file) => {
+                  setValue("petImage", [file]);
+                }}
               />
             </div>
 
@@ -265,7 +312,7 @@ export default function AddPetPage() {
               />
             </div>
 
-            <FormButton>Add this Pet</FormButton>
+            <FormButton isLoading={isSubmitting}>Add this Pet</FormButton>
           </form>
         </CardContent>
       </Card>

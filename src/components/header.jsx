@@ -20,17 +20,24 @@ const Header = async () => {
           </span>
         </Link>
 
-        {/* Profile Icon */}
         <SignedIn>
-          <UserButton
-            appearance={{
-              elements: {
-                avatarBox: "h-10 w-10",
-                userButtonPopoverCard: "shadow-xl",
-                userPreviewMainIdentifier: "font-semibold",
-              },
-            }}
-          />
+          <div className="flex items-center gap-6">
+            <Link 
+              href="/category" 
+              className="text-gray-700 hover:text-gray-900 transition-colors"
+            >
+              Home
+            </Link>
+            <UserButton
+              appearance={{
+                elements: {
+                  avatarBox: "h-10 w-10",
+                  userButtonPopoverCard: "shadow-xl",
+                  userPreviewMainIdentifier: "font-semibold",
+                },
+              }}
+            />
+          </div>
         </SignedIn>
 
         <SignedOut>

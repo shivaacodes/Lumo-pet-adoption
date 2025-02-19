@@ -8,18 +8,20 @@ datasource db {
 }
 
 model User {
-  id               Int               @id @default(autoincrement())
-  clerkUserId      String            @unique
-  name             String
-  email            String            @unique
-  password         String?
-  phone            String            @unique
-  userImageUrl     String?
-  address          String?
-  createdAt        DateTime          @default(now())
-  updatedAt        DateTime          @updatedAt
-  pets             Pet[] // User can own multiple pets
-  adoptionRequests AdoptionRequest[] // User's adoption requests
+  id                 Int                @id @default(autoincrement())
+  clerkUserId        String             @unique
+  name               String
+  email              String             @unique
+  password           String?
+  phone              String             @unique
+  userImageUrl       String?
+  address            String?
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
+  pets               Pet[] // User can own multiple pets
+  adoptionRequests   AdoptionRequest[] // User's adoption requests
+  favoritePets       FavoritePet[] // User's favorite pets
+  favoriteCategories FavoriteCategory[] // User's favorite categories
 }
 
 model Pet {
@@ -38,6 +40,7 @@ model Pet {
   ownerId           Int
   owner             User              @relation(fields: [ownerId], references: [id], onDelete: Cascade)
   adoptionRequests  AdoptionRequest[]
+  favoritedBy       FavoritePet[]
 }
 
 model AdoptionRequest {
@@ -48,6 +51,32 @@ model AdoptionRequest {
   status    AdoptionStatus
   pet       Pet            @relation(fields: [petId], references: [id], onDelete: Cascade)
   adopter   User           @relation(fields: [adopterId], references: [id], onDelete: Cascade)
+}
+
+// New model for favorite pets
+model FavoritePet {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  petId     Int
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  pet       Pet      @relation(fields: [petId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, petId]) // Prevent duplicate favorites
+  @@index([userId])
+  @@index([petId])
+}
+
+// New model for favorite categories
+model FavoriteCategory {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  category  String // e.g., "dog", "cat", etc.
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, category]) // Prevent duplicate category favorites
+  @@index([userId])
 }
 
 enum PetStatus {
