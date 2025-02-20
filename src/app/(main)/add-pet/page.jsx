@@ -19,7 +19,7 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { useAuth } from "@clerk/nextjs";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import FileUpload from '@/components/file-upload';
+import FileUpload from "@/components/file-upload";
 
 export default function AddPetPage() {
   const { userId } = useAuth();
@@ -90,8 +90,13 @@ export default function AddPetPage() {
 
       const formData = new FormData();
 
-      // Validate required fields
-      if (!data.category || !data.age || !data.price || !data.description || !data.vaccinationStatus) {
+      if (
+        !data.category ||
+        !data.age ||
+        !data.price ||
+        !data.description ||
+        !data.vaccinationStatus
+      ) {
         toast.error("Please fill in all required fields", {
           richColors: true,
         });
@@ -101,7 +106,7 @@ export default function AddPetPage() {
       // Validate file if present
       if (data.petImage?.[0]) {
         const file = data.petImage[0];
-        const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
+        const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
         const fiveMB = 5 * 1024 * 1024;
 
         if (!allowedTypes.includes(file.type)) {
@@ -117,8 +122,8 @@ export default function AddPetPage() {
 
       // Append form data
       formData.append("category", data.category);
-      formData.append("breed", data.breed || '');
-      formData.append("color", data.color || '');
+      formData.append("breed", data.breed || "");
+      formData.append("color", data.color || "");
       formData.append("age", data.age.toString());
       formData.append("price", data.price.toString());
       formData.append("negotiable", Boolean(data.negotiable).toString());
@@ -237,7 +242,6 @@ export default function AddPetPage() {
               </p>
             </div>
 
-            {/* Price and Negotiable (Side by side) */}
             <div className="grid grid-cols-2 gap-8">
               <div className="flex items-center space-x-4">
                 <Label className="text-xl">Price (in ₹)</Label>
@@ -272,7 +276,6 @@ export default function AddPetPage() {
               </div>
             </div>
 
-            {/* Vaccination Status */}
             <div>
               <Label className="text-xl">Vaccination Status</Label>
               <Select
@@ -291,9 +294,7 @@ export default function AddPetPage() {
               </Select>
             </div>
 
-            {/* Pet Image */}
             <div>
-              <Label className="text-xl">Pet Image</Label>
               <FileUpload
                 register={register("petImage")}
                 onFileSelect={(file) => {
@@ -302,7 +303,6 @@ export default function AddPetPage() {
               />
             </div>
 
-            {/* Description */}
             <div>
               <Label className="text-xl">Description</Label>
               <Textarea
