@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import prisma from "@/lib/prisma";
+import { db } from "@/lib/prisma";
 import { auth } from "@clerk/nextjs";
 
 export async function POST(req) {
@@ -11,7 +11,8 @@ export async function POST(req) {
       return NextResponse.json({ error: "Invalid request" }, { status: 400 });
     }
 
-    const user = await prisma.user.findUnique({
+    // Get user from database using clerkUserId
+    const user = await db.user.findUnique({
       where: { clerkUserId: userId },
     });
 
@@ -20,7 +21,7 @@ export async function POST(req) {
     }
 
     // Check if already exists (case insensitive)
-    const existing = await prisma.favoriteCategory.findFirst({
+    const existing = await db.favoriteCategory.findFirst({
       where: {
         userId: user.id,
         category: {
@@ -31,16 +32,18 @@ export async function POST(req) {
     });
 
     if (existing) {
-      return NextResponse.json(
-        { error: "Category already in favorites" },
-        { status: 400 }
-      );
+      // If it exists, delete it (toggle off)
+      await db.favoriteCategory.delete({
+        where: { id: existing.id },
+      });
+      return NextResponse.json({ message: "Favorite removed" }, { status: 200 });
     }
 
-    const favoriteCategory = await prisma.favoriteCategory.create({
+    // If it doesn't exist, create it (toggle on)
+    const favoriteCategory = await db.favoriteCategory.create({
       data: {
         userId: user.id,
-        category: category.toLowerCase(), 
+        category: category.toLowerCase(),
       },
     });
 
@@ -48,7 +51,7 @@ export async function POST(req) {
   } catch (error) {
     console.error('Error in POST /api/favorites/categories:', error);
     return NextResponse.json(
-      { error: "Error adding to favorites" },
+      { error: "Failed to update favorite" },
       { status: 500 }
     );
   }

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import categories from "@/app/data/category";
 import SearchBar from "@/components/search";
@@ -12,74 +12,28 @@ import { toast } from "sonner";
 const CategoryPage = ({ params }) => {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
-  const [pets, setPets] = useState([]);
-  const [favoriteCategories, setFavoriteCategories] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
-
-  // Unwrap the params object using React.use()
-  const { category } = React.use(params); // Unwrap the category from params
-
-  // Fetch the category-related pets using useEffect or data fetching logic
-  useEffect(() => {
-    if (category) {
-      // Assuming petsData is available and filtered based on category
-      const filteredPets = petsData.filter((pet) => pet.category === category);
-      setPets(filteredPets);
-    }
-  }, [category]);
-
-  // Fetch favorite categories on component mount
-  useEffect(() => {
-    fetchFavoriteCategories();
-  }, []);
-
-  const fetchFavoriteCategories = async () => {
-    try {
-      setIsLoading(true);
-      const response = await fetch('/api/favorites/categories');
-      
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error || 'Failed to fetch favorites');
-      }
-      
-      const data = await response.json();
-      setFavoriteCategories(data);
-    } catch (error) {
-      console.error('Error fetching favorites:', error);
-      toast.error('Failed to load favorites');
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   const handleFavoriteToggle = async (category) => {
     try {
-      // Convert category to lowercase for consistency
-      const categoryLower = category.toLowerCase();
-      const isFavorite = favoriteCategories.some(fav => fav.category.toLowerCase() === categoryLower);
-      
+      setIsLoading(true);
       const response = await fetch('/api/favorites/categories', {
-        method: isFavorite ? 'DELETE' : 'POST',
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ category: categoryLower }),
+        body: JSON.stringify({ category: category.toLowerCase() }),
       });
 
-      if (response.ok) {
-        if (isFavorite) {
-          setFavoriteCategories(prev => 
-            prev.filter(fav => fav.category.toLowerCase() !== categoryLower)
-          );
-        } else {
-          const newFavorite = await response.json();
-          setFavoriteCategories(prev => [...prev, newFavorite]);
-        }
+      if (!response.ok) {
+        throw new Error('Failed to update favorite');
       }
+
     } catch (error) {
       console.error('Error toggling favorite:', error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -107,19 +61,13 @@ const CategoryPage = ({ params }) => {
         {categories.map((category, index) => (
           <div key={index} className="relative">
             <div className="absolute top-4 right-4 z-10">
-              {isLoading ? (
-                <div className="animate-pulse w-6 h-6 bg-gray-200 rounded-full" />
-              ) : (
-                <LikeButton
-                  isLiked={favoriteCategories.some(
-                    fav => fav.category.toLowerCase() === category.category.toLowerCase()
-                  )}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleFavoriteToggle(category.category);
-                  }}
-                />
-              )}
+              <LikeButton
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleFavoriteToggle(category.category);
+                }}
+                disabled={isLoading}
+              />
             </div>
             <div
               className={`p-4 rounded-2xl shadow-md transition-transform duration-300 hover:scale-105 cursor-pointer flex flex-col items-center text-center ${category.bgColor} hover:${category.hoverColor}`}
@@ -209,10 +157,8 @@ const CategoryPage = ({ params }) => {
                 onClick={() => router.push(`/category/${selectedCategory}`)}
               />
               <LikeButton
-                isLiked={favoriteCategories.some(
-                  fav => fav.category === selectedCategory
-                )}
                 onClick={() => handleFavoriteToggle(selectedCategory)}
+                disabled={isLoading}
               />
             </div>
           </div>

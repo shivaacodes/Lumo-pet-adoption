@@ -1,141 +1,158 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-} from "@/components/ui/card";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import React, { useEffect, useState } from "react";
+import Image from "next/image";
+import { Card, CardContent } from "@/components/ui/card";
+import { toast } from "sonner";
+import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+
+// Default placeholder image
+const PLACEHOLDER_IMAGE = "/placeholder.svg";
 
 export default function CategoryPage({ params }) {
-  const { category } = params;
+  const { category } = React.use(params);
   const [pets, setPets] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [selectedPet, setSelectedPet] = useState(null);
 
   useEffect(() => {
-    setIsLoading(true);
-    setError(null); // Clear previous errors on category change
-    fetch(`/api/pets?category=${category}`)
-      .then((res) => {
-        if (!res.ok) {
-          throw new Error("Failed to fetch pets");
+    const fetchPets = async () => {
+      if (!category) {
+        setIsLoading(false);
+        return;
+      }
+      
+      try {
+        setIsLoading(true);
+        setError(null);
+        
+        const response = await fetch(
+          `/api/pets/by-category?category=${encodeURIComponent(category)}`
+        );
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.error || "Failed to fetch pets");
         }
-        return res.json();
-      })
-      .then((data) => {
-        setPets(data);
-        setIsLoading(false);
-      })
-      .catch((err) => {
+
+        setPets(Array.isArray(data) ? data : []);
+      } catch (err) {
+        console.error("Error fetching pets:", err);
         setError(err.message);
+        toast.error("Failed to load pets", {
+          description: err.message,
+        });
+      } finally {
         setIsLoading(false);
-      });
+      }
+    };
+
+    fetchPets();
   }, [category]);
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-lg">Loading pets...</div>
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-blue-500" />
+      </div>
+    );
+  }
+
+  if (!category) {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <h1 className="text-3xl font-bold text-red-500">Invalid Category</h1>
+      </div>
+    );
+  }
+
+  if (pets.length === 0) {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <h1 className="text-3xl font-bold mb-8">
+          Available {category} for Adoption
+        </h1>
+        <p className="text-gray-600 text-center text-lg">
+          No {category}s available for adoption at the moment.
+        </p>
       </div>
     );
   }
 
   return (
-    <div className="container mx-auto p-6">
+    <div className="container mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold mb-8">
-        {category} Available for Adoption
+        Available {category} for Adoption
       </h1>
 
-      {error ? (
-        <div className="text-red-500 p-4 rounded-md bg-red-50">
-          Error: {error}
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {pets.length > 0 ? (
-            pets.map((pet) => (
-              <Card
-                key={pet.id}
-                className="cursor-pointer hover:shadow-lg transition-shadow"
-                onClick={() => setSelectedPet(pet)}
-              >
-                <CardHeader className="p-0">
-                  <div className="aspect-square relative">
-                    <img
-                      src={pet.image || "/placeholder.svg"}
-                      alt={pet.name}
-                      className="object-cover w-full h-full rounded-t-lg"
-                    />
-                  </div>
-                </CardHeader>
-                <CardContent className="p-4">
-                  <h3 className="font-semibold text-lg mb-1">{pet.name}</h3>
-                  <Badge variant="secondary">{pet.breed}</Badge>
-                </CardContent>
-                <CardFooter className="p-4 pt-0 flex justify-between">
-                  <span className="text-sm text-muted-foreground">
-                    Age: {pet.age} years
-                  </span>
-                  <Button variant="outline" size="sm">
-                    View Details
-                  </Button>
-                </CardFooter>
-              </Card>
-            ))
-          ) : (
-            <div className="col-span-full text-center p-8 bg-muted rounded-lg">
-              No pets available for adoption in this category.
-            </div>
-          )}
-        </div>
-      )}
-
-      {selectedPet && (
-        <Dialog open={true} onOpenChange={() => setSelectedPet(null)}>
-          <DialogContent className="max-w-2xl">
-            <DialogHeader>
-              <DialogTitle>{selectedPet.name}</DialogTitle>
-            </DialogHeader>
-            <div className="grid gap-4 py-4">
-              <div className="aspect-video relative rounded-lg overflow-hidden">
-                <img
-                  src={selectedPet.image || "/placeholder.svg"}
-                  alt={selectedPet.name}
-                  className="object-cover w-full h-full"
-                />
-              </div>
-              <div className="grid gap-2">
-                <div className="flex items-center gap-2">
-                  <Badge>{selectedPet.breed}</Badge>
-                  <Badge variant="outline">{selectedPet.age} years old</Badge>
-                </div>
-                {selectedPet.description && (
-                  <p className="text-muted-foreground">
-                    {selectedPet.description}
-                  </p>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        {pets.map((pet) => (
+          <Card key={pet.id} className="overflow-hidden hover:shadow-lg transition-shadow duration-300 flex flex-col">
+            <CardContent className="p-0 flex-1 flex flex-col">
+              <div className="relative h-48">
+                {pet.petImageUrl ? (
+                  <Image
+                    src={pet.petImageUrl}
+                    alt={`${pet.breed || pet.category}`}
+                    fill
+                    className="object-cover"
+                    priority={false}
+                  />
+                ) : (
+                  <Image
+                    src={PLACEHOLDER_IMAGE}
+                    alt="Placeholder"
+                    fill
+                    className="object-cover"
+                    priority={false}
+                  />
                 )}
               </div>
-              <div className="flex justify-end gap-2">
-                <Button variant="outline" onClick={() => setSelectedPet(null)}>
-                  Close
-                </Button>
-                <Button>Contact About Adoption</Button>
+              <div className="p-4 flex flex-col flex-1">
+                <div className="space-y-2 flex-1">
+                  <div className="flex justify-between items-start">
+                    <h3 className="font-semibold line-clamp-2">{pet.breed || pet.category}</h3>
+                    <span className="text-blue-600 font-medium whitespace-nowrap ml-2">
+                      ₹{pet.price.toLocaleString()}
+                      {pet.isNegotiable && " (Negotiable)"}
+                    </span>
+                  </div>
+                  <p className="text-xs text-gray-500">ID: {pet.id}</p>
+                  <p className="text-sm text-gray-600">Age: {pet.age} years</p>
+                  {pet.color && (
+                    <p className="text-sm text-gray-600">Color: {pet.color}</p>
+                  )}
+                  <p className="text-sm text-gray-600">
+                    Vaccination: {pet.vaccinationStatus.toLowerCase().replace(/_/g, " ")}
+                  </p>
+                  <p className="text-sm text-gray-500 line-clamp-2">
+                    Description: {pet.description}
+                  </p>
+                  <div className="text-xs text-gray-500">
+                    Posted by: {pet.owner.id}
+                    {pet.owner.phone && (
+                      <span className="block">Contact: {pet.owner.phone}</span>
+                    )}
+                  </div>
+                </div>
+                <div className="pt-3 mt-auto">
+                  <Button 
+                    size="sm"
+                    className="w-full bg-green-500 hover:bg-green-600 text-white"
+                    onClick={() => {
+                      toast.success("Adoption request sent!");
+                    }}
+                  >
+                    Adopt
+                  </Button>
+                </div>
               </div>
-            </div>
-          </DialogContent>
-        </Dialog>
-      )}
+            </CardContent>
+          </Card>
+        ))}
+      </div>
     </div>
   );
 }

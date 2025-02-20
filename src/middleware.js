@@ -1,46 +1,37 @@
-import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
+import { clerkMiddleware } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
-import { checkUser } from "@/lib/checkUser";
 
-const isProtectedRoute = createRouteMatcher([
-  "/category(.*)",
-  "/favourites(.*)",
-  "/add-pet(.*)",
-  "/requests(.*)",
-  "/settings(.*)",
-]);
+// Define public routes that don't require authentication
+const publicPaths = [
+  "/",
+  "/sign-in*",
+  "/sign-up*",
+  "/api/pets/by-category*",
+  "/category*",
+];
 
-export default clerkMiddleware(async (auth, req) => {
-  try {
-    const { userId } = await auth();
+const isPublic = (path) => {
+  return publicPaths.find((x) =>
+    path.match(new RegExp(`^${x.replace("*", ".*")}$`))
+  );
+};
 
-    // If the user is not logged in and tries to access a protected route
-    if (!userId && isProtectedRoute(req)) {
-      const { redirectToSignIn } = await auth();
-      return redirectToSignIn();
-    }
+export default clerkMiddleware((auth, req) => {
+  const path = req.nextUrl.pathname;
 
-    // Only proceed with database sync for authenticated users
-    if (userId) {
-      // Sync user data with our database
-      const dbUser = await checkUser();
-      
-      // After successful sign-in, redirect to category page
-      if (req.nextUrl.pathname === "/" || req.nextUrl.pathname === "/sign-in") {
-        return NextResponse.redirect(new URL("/category", req.url));
-      }
-    }
-
-    return NextResponse.next();
-  } catch (error) {
-    console.error("Middleware error:", error);
+  // Allow public routes
+  if (isPublic(path)) {
     return NextResponse.next();
   }
+
+  // Continue with default clerk middleware behavior
+  return NextResponse.next();
 });
 
 export const config = {
   matcher: [
-    "/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)",
+    "/((?!.*\\..*|_next).*)",
+    "/",
     "/(api|trpc)(.*)",
   ],
 };
